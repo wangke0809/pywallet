@@ -14,6 +14,7 @@ import base58
 import base64
 import hashlib
 import hmac
+import binascii
 from mnemonic.mnemonic import Mnemonic
 import random
 from two1.bitcoin.utils import bytes_to_str
@@ -25,11 +26,15 @@ from two1.crypto.ecdsa import secp256k1
 
 bitcoin_curve = secp256k1()
 
-from rlp.utils import encode_hex
-
 from Crypto.Hash import keccak
 sha3_256 = lambda x: keccak.new(digest_bits=256, data=x)
 
+def encode_hex(b):
+    if isinstance(b, str):
+        b = bytes(b, 'utf-8')
+    if isinstance(b, (bytes, bytearray)):
+        return str(binascii.hexlify(b), 'utf-8')
+    raise TypeError('Value must be an instance of str or bytes')
 
 def sha3(seed):
     return sha3_256(seed).digest()
